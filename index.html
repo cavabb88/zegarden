@@ -7,435 +7,445 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0f0f0e;
-    --surface: #1a1a18;
-    --surface2: #222220;
-    --border: #2e2e2a;
-    --border2: #3a3a36;
-    --text: #f0ede6;
-    --muted: #7a7870;
-    --subtle: #4a4a46;
-    --gold: #c9a84c;
-    --gold2: #e8c870;
-    --green: #5c9e78;
-    --green2: #7ec49a;
-    --blue: #4a7fa5;
-    --blue2: #6fa8d0;
-    --coral: #c46a4a;
-    --coral2: #e08870;
-    --teal: #4a9e9e;
-    --teal2: #6fc4c4;
-    --purple: #7a6aaa;
-    --purple2: #a090cc;
-    --font-serif: 'DM Serif Display', Georgia, serif;
-    --font-sans: 'DM Sans', sans-serif;
-    --font-mono: 'DM Mono', monospace;
+    --bg:#0f0f0e; --surface:#1a1a18; --surface2:#222220;
+    --border:#2e2e2a; --border2:#3a3a36;
+    --text:#f0ede6; --muted:#7a7870; --subtle:#4a4a46;
+    --gold:#c9a84c; --gold2:#e8c870;
+    --green:#5c9e78; --green2:#7ec49a;
+    --blue:#4a7fa5; --blue2:#6fa8d0;
+    --coral:#c46a4a; --coral2:#e08870;
+    --teal:#4a9e9e; --teal2:#6fc4c4;
+    --purple:#7a6aaa; --purple2:#a090cc;
+    --font-serif:'DM Serif Display',Georgia,serif;
+    --font-sans:'DM Sans',sans-serif;
+    --font-mono:'DM Mono',monospace;
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: var(--bg); color: var(--text); font-family: var(--font-sans); font-size: 14px; min-height: 100vh; padding: 2rem; }
-
-  .fx-bar { display: flex; gap: 1.5rem; align-items: center; padding: 0.6rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 2rem; font-family: var(--font-mono); font-size: 11px; color: var(--muted); flex-wrap: wrap; }
-  .fx-bar span { color: var(--text); }
-  .fx-label { color: var(--muted); margin-right: 3px; }
-
-  header { margin-bottom: 2.5rem; }
-  header h1 { font-family: var(--font-serif); font-size: 2.4rem; font-weight: 400; letter-spacing: -0.02em; color: var(--text); line-height: 1.1; }
-  header h1 em { color: var(--gold); font-style: italic; }
-  .as-of { font-size: 11px; color: var(--muted); font-family: var(--font-mono); margin-top: 0.4rem; }
-
-  .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 2.5rem; }
-  .summary-card { background: var(--surface); padding: 1.25rem 1.5rem; }
-  .summary-card .label { font-size: 10px; font-family: var(--font-mono); color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.5rem; }
-  .summary-card .amount { font-family: var(--font-mono); font-size: 1.3rem; font-weight: 500; color: var(--text); letter-spacing: -0.02em; }
-  .summary-card .sub { font-size: 11px; color: var(--muted); margin-top: 0.25rem; font-family: var(--font-mono); }
-  .summary-card.highlight .amount { color: var(--gold); }
-  .summary-card.green .amount { color: var(--green2); }
-  .summary-card.red .amount { color: var(--coral2); }
-
-  .alloc-section { margin-bottom: 2.5rem; }
-  .section-title { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
-  .alloc-bar { height: 10px; border-radius: 5px; overflow: hidden; display: flex; gap: 2px; margin-bottom: 1rem; }
-  .alloc-seg { height: 100%; border-radius: 2px; }
-  .alloc-legend { display: flex; gap: 1.5rem; flex-wrap: wrap; }
-  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
-  .legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
-  .legend-item strong { color: var(--text); font-weight: 500; }
-
-  .asset-section { margin-bottom: 2rem; }
-  .asset-header { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px 10px 0 0; border-bottom: none; }
-  .asset-header-left { display: flex; align-items: center; gap: 10px; }
-  .asset-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
-  .asset-type-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text); font-weight: 500; }
-  .asset-total { font-family: var(--font-mono); font-size: 13px; color: var(--gold); font-weight: 500; }
-  .asset-pct { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-left: 8px; }
-
-  table { width: 100%; border-collapse: collapse; background: var(--surface2); border: 1px solid var(--border); border-radius: 0 0 10px 10px; overflow: hidden; }
-  thead th { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 0.6rem 1rem; text-align: left; border-bottom: 1px solid var(--border); font-weight: 400; }
-  thead th.right { text-align: right; }
-  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: var(--surface); }
-  tbody td { padding: 0.65rem 1rem; font-family: var(--font-mono); font-size: 12px; color: var(--text); }
-  tbody td.muted { color: var(--muted); }
-  tbody td.right { text-align: right; }
-  tbody td.thb { color: var(--gold2); text-align: right; }
-  .gain { color: var(--green2); }
-  .loss { color: var(--coral2); }
-
-  .badge { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 4px; font-family: var(--font-mono); letter-spacing: 0.03em; }
-  .badge-saving { background: #1a2e22; color: var(--green2); }
-  .badge-nofix { background: #1e2a35; color: var(--blue2); }
-  .badge-td { background: #2a2218; color: var(--gold); }
-  .badge-mm { background: #1f2a28; color: var(--teal2); }
-  .badge-expiring { background: #2a1e1e; color: #e07070; }
-  .badge-rmf { background: #241e30; color: var(--purple2); }
-  .badge-mf { background: #1e2530; color: var(--blue2); }
-
-  .broker-group td:first-child { padding-left: 1.5rem; }
-  .broker-header-row td { background: var(--surface); color: var(--muted); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.4rem 1rem; border-bottom: 1px solid var(--border); }
-
-  footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); font-size: 11px; color: var(--subtle); font-family: var(--font-mono); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:var(--font-sans);font-size:14px;min-height:100vh;padding:2rem;}
 
   /* ── LOCK SCREEN ── */
-  #lock-screen {
-    position: fixed; inset: 0; z-index: 9999;
-    background: var(--bg);
-    display: flex; align-items: center; justify-content: center;
-    flex-direction: column;
-  }
-  #lock-screen h2 {
-    font-family: var(--font-serif); font-size: 2rem; font-weight: 400;
-    color: var(--text); margin-bottom: 0.4rem; letter-spacing: -0.02em;
-  }
-  #lock-screen h2 em { color: var(--gold); font-style: italic; }
-  #lock-screen p {
-    font-family: var(--font-mono); font-size: 11px; color: var(--muted);
-    margin-bottom: 2rem;
-  }
-  .lock-box {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; padding: 2rem; width: 320px;
-    display: flex; flex-direction: column; gap: 1rem;
-  }
-  .lock-box label {
-    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--muted);
-  }
-  .lock-box input {
-    background: var(--bg); border: 1px solid var(--border2);
-    border-radius: 8px; padding: 0.75rem 1rem;
-    color: var(--text); font-family: var(--font-mono); font-size: 14px;
-    outline: none; width: 100%; letter-spacing: 0.1em;
-    transition: border-color 0.15s;
-  }
-  .lock-box input:focus { border-color: var(--gold); }
-  .lock-box button {
-    background: var(--gold); color: var(--bg);
-    border: none; border-radius: 8px; padding: 0.75rem;
-    font-family: var(--font-mono); font-size: 12px; font-weight: 500;
-    letter-spacing: 0.05em; cursor: pointer;
-    transition: background 0.15s;
-  }
-  .lock-box button:hover { background: var(--gold2); }
-  #lock-error {
-    font-family: var(--font-mono); font-size: 11px; color: #e07070;
-    text-align: center; min-height: 16px;
-  }
-  #dashboard { display: none; }
+  #lock-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;}
+  #lock-screen h2{font-family:var(--font-serif);font-size:2rem;font-weight:400;color:var(--text);margin-bottom:.4rem;letter-spacing:-.02em;}
+  #lock-screen h2 em{color:var(--gold);font-style:italic;}
+  #lock-screen p{font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-bottom:2rem;}
+  .lock-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2rem;width:320px;display:flex;flex-direction:column;gap:1rem;}
+  .lock-box label{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+  .lock-box input{background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:.75rem 1rem;color:var(--text);font-family:var(--font-mono);font-size:14px;outline:none;width:100%;letter-spacing:.1em;transition:border-color .15s;}
+  .lock-box input:focus{border-color:var(--gold);}
+  .lock-box button{background:var(--gold);color:var(--bg);border:none;border-radius:8px;padding:.75rem;font-family:var(--font-mono);font-size:12px;font-weight:500;letter-spacing:.05em;cursor:pointer;transition:background .15s;}
+  .lock-box button:hover{background:var(--gold2);}
+  #lock-error{font-family:var(--font-mono);font-size:11px;color:#e07070;text-align:center;min-height:16px;}
+  #dashboard{display:none;}
+
+  /* ── LOADING ── */
+  #loading{display:none;position:fixed;inset:0;z-index:999;background:var(--bg);align-items:center;justify-content:center;flex-direction:column;gap:1rem;}
+  .spinner{width:32px;height:32px;border:2px solid var(--border2);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  #loading p{font-family:var(--font-mono);font-size:11px;color:var(--muted);}
+
+  /* ── LAYOUT ── */
+  .fx-bar{display:flex;gap:1.5rem;align-items:center;padding:.6rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-bottom:2rem;font-family:var(--font-mono);font-size:11px;color:var(--muted);flex-wrap:wrap;}
+  .fx-bar span{color:var(--text);}
+  .fx-label{color:var(--muted);margin-right:3px;}
+  header{margin-bottom:2.5rem;}
+  header h1{font-family:var(--font-serif);font-size:2.4rem;font-weight:400;letter-spacing:-.02em;color:var(--text);line-height:1.1;}
+  header h1 em{color:var(--gold);font-style:italic;}
+  .as-of{font-size:11px;color:var(--muted);font-family:var(--font-mono);margin-top:.4rem;}
+
+  .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:2.5rem;}
+  .summary-card{background:var(--surface);padding:1.25rem 1.5rem;}
+  .summary-card .label{font-size:10px;font-family:var(--font-mono);color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem;}
+  .summary-card .amount{font-family:var(--font-mono);font-size:1.3rem;font-weight:500;color:var(--text);letter-spacing:-.02em;}
+  .summary-card .sub{font-size:11px;color:var(--muted);margin-top:.25rem;font-family:var(--font-mono);}
+  .summary-card.highlight .amount{color:var(--gold);}
+
+  .alloc-section{margin-bottom:2.5rem;}
+  .section-title{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;}
+  .alloc-bar{height:10px;border-radius:5px;overflow:hidden;display:flex;gap:2px;margin-bottom:1rem;}
+  .alloc-seg{height:100%;border-radius:2px;transition:width .5s ease;}
+  .alloc-legend{display:flex;gap:1.5rem;flex-wrap:wrap;}
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);}
+  .legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+  .legend-item strong{color:var(--text);font-weight:500;}
+
+  .asset-section{margin-bottom:2rem;}
+  .asset-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px 10px 0 0;border-bottom:none;}
+  .asset-header-left{display:flex;align-items:center;gap:10px;}
+  .asset-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+  .asset-type-label{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--text);font-weight:500;}
+  .asset-total{font-family:var(--font-mono);font-size:13px;color:var(--gold);font-weight:500;}
+  .asset-pct{font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-left:8px;}
+
+  table{width:100%;border-collapse:collapse;background:var(--surface2);border:1px solid var(--border);border-radius:0 0 10px 10px;overflow:hidden;}
+  thead th{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:.6rem 1rem;text-align:left;border-bottom:1px solid var(--border);font-weight:400;}
+  thead th.right{text-align:right;}
+  tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
+  tbody tr:last-child{border-bottom:none;}
+  tbody tr:hover{background:var(--surface);}
+  tbody td{padding:.65rem 1rem;font-family:var(--font-mono);font-size:12px;color:var(--text);}
+  tbody td.muted{color:var(--muted);}
+  tbody td.right{text-align:right;}
+  tbody td.thb{color:var(--gold2);text-align:right;}
+  .gain{color:var(--green2);}
+  .loss{color:var(--coral2);}
+
+  .badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:4px;font-family:var(--font-mono);letter-spacing:.03em;}
+  .badge-saving{background:#1a2e22;color:var(--green2);}
+  .badge-nofix{background:#1e2a35;color:var(--blue2);}
+  .badge-td{background:#2a2218;color:var(--gold);}
+  .badge-mm{background:#1f2a28;color:var(--teal2);}
+  .badge-expiring{background:#2a1e1e;color:#e07070;}
+  .badge-rmf{background:#241e30;color:var(--purple2);}
+
+  .broker-header-row td{background:var(--surface);color:var(--muted);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:.4rem 1rem;border-bottom:1px solid var(--border);}
+  .broker-group td:first-child{padding-left:1.5rem;}
+
+  .refresh-btn{background:none;border:1px solid var(--border2);color:var(--muted);border-radius:6px;padding:.3rem .8rem;font-family:var(--font-mono);font-size:10px;cursor:pointer;transition:all .15s;letter-spacing:.05em;}
+  .refresh-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+  footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:11px;color:var(--subtle);font-family:var(--font-mono);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
 </style>
 </head>
 <body>
 
-<div class="fx-bar">
-  <span style="color:var(--muted);font-weight:500;">FX RATES (approx)</span>
-  <span><span class="fx-label">AUD/THB</span><span>23.00</span></span>
-  <span><span class="fx-label">SGD/THB</span><span>26.00</span></span>
-  <span><span class="fx-label">USD/THB</span><span>33.50</span></span>
-</div>
-
-<header>
-  <h1>Wealth <em>Overview</em></h1>
-  <div class="as-of">As of 3 June 2026 · All values converted to THB</div>
-</header>
-
-<script>
-const FX = { AUD: 23, SGD: 26, USD: 33.5, THB: 1 };
-function toTHB(amt, ccy) { return amt * FX[ccy]; }
-function fmt(n) { return Math.round(n).toLocaleString('en-US'); }
-function pct(v) { return (v >= 0 ? '+' : '') + v.toFixed(1) + '%'; }
-
-// ── CASH ──────────────────────────────────────────────────────────────────────
-const cash = [
-  { institution:'KBANK',   ccy:'THB', amount:27373392, type:'Savings',  badge:'badge-saving' },
-  { institution:'TTB',     ccy:'THB', amount:1654413,  type:'No-fix',   badge:'badge-nofix'  },
-  { institution:'UOB',     ccy:'THB', amount:7067755,  type:'Savings',  badge:'badge-saving' },
-  { institution:'HSBC AU', ccy:'AUD', amount:10029,    type:'Savings',  badge:'badge-saving' },
-  { institution:'HSBC SG', ccy:'SGD', amount:19832,    type:'Savings',  badge:'badge-saving' },
-  { institution:'Citi',    ccy:'USD', amount:47520,    type:'Savings',  badge:'badge-saving' },
-];
-
-// ── TERM DEPOSITS ─────────────────────────────────────────────────────────────
-const termDeposits = [
-  { institution:'St George', ccy:'AUD', amount:500000, rate:'3.45%', maturity:'29 Oct 2026', badge:'badge-td' },
-  { institution:'St George', ccy:'AUD', amount:95000,  rate:'5.35%', maturity:'12 May 2027', badge:'badge-td' },
-  { institution:'St George', ccy:'AUD', amount:60000,  rate:'3.95%', maturity:'12 Jun 2026', badge:'badge-expiring' },
-  { institution:'St George', ccy:'AUD', amount:770000, rate:'5.05%', maturity:'Incentive Saver (at-call)', badge:'badge-mm' },
-];
-
-// ── MUTUAL FUNDS ──────────────────────────────────────────────────────────────
-// currentValue = totalUnits * navPerUnit
-const mutualFunds = [
-  // TTB broker
-  { broker:'TTB', fund:'ES-IPLUS',       ccy:'THB', cost:5630000,  avgUnit:12.3398, nav:12.3777, units:4562473.983, isRMF:false },
-  { broker:'TTB', fund:'ES-PIPF',        ccy:'THB', cost:2543140,  avgUnit:12.6341, nav:8.9062,  units:201292.013,  isRMF:false },
-  { broker:'TTB', fund:'ES-JB25DIV',     ccy:'THB', cost:1800000,  avgUnit:17.92,   nav:22.0756, units:100469.76,   isRMF:false },
-  { broker:'TTB', fund:'UTCG-LN',        ccy:'THB', cost:2400000,  avgUnit:48.60,   nav:59.6502, units:49381.63,    isRMF:false },
-  { broker:'TTB', fund:'ERMF',           ccy:'THB', cost:2600000,  avgUnit:86.33,   nav:95.6407, units:30116.51,    isRMF:true  },
-  { broker:'TTB', fund:'ES-GQGRMF',      ccy:'THB', cost:345000,   avgUnit:17.1318, nav:23.9715, units:20137.9406,  isRMF:true  },
-  { broker:'TTB', fund:'ES-JB25RMF',     ccy:'THB', cost:1800000,  avgUnit:21.16,   nav:41.2978, units:85070.87,    isRMF:true  },
-  { broker:'TTB', fund:'ES-US500RMF',    ccy:'THB', cost:100000,   avgUnit:38.4378, nav:41.6338, units:2601.6057,   isRMF:true  },
-  // FINOMENA broker
-  { broker:'FINOMENA', fund:'MEGAWORLD30-A (1)', ccy:'THB', cost:250000,  avgUnit:10.5115, nav:22.4395, units:23783.50,   isRMF:false },
-  { broker:'FINOMENA', fund:'MEGAWORLD30-A (2)', ccy:'THB', cost:250000,  avgUnit:10.1,    nav:12.8608, units:24752.48,   isRMF:false },
-  { broker:'FINOMENA', fund:'K-CHINA-A(A)',      ccy:'THB', cost:150000,  avgUnit:5.9466,  nav:5.6097,  units:25224.55,   isRMF:false },
-  { broker:'FINOMENA', fund:'PRINCIPAL VNEQ-A',  ccy:'THB', cost:100000,  avgUnit:11.6219, nav:12.3635, units:8604.45,    isRMF:false },
-  { broker:'FINOMENA', fund:'UOBSA',             ccy:'THB', cost:45907,   avgUnit:12.1753, nav:16.547,  units:3770.53,    isRMF:false },
-  { broker:'FINOMENA', fund:'KF-SINCOME-FX-A',   ccy:'THB', cost:50000,   avgUnit:10.9572, nav:10.9682, units:4563.21,    isRMF:false },
-  { broker:'FINOMENA', fund:'ONE-LS5-UI',        ccy:'THB', cost:500000,  avgUnit:10.15,   nav:11.5863, units:49261.08,   isRMF:false },
-  { broker:'FINOMENA', fund:'KFFVPE-UI',         ccy:'THB', cost:2000000, avgUnit:10.2,    nav:11.0298, units:196078.43,  isRMF:false },
-  { broker:'FINOMENA', fund:'K-CHANGERMF',       ccy:'THB', cost:200000,  avgUnit:11.036,  nav:10.4083, units:18122.43,   isRMF:true  },
-  { broker:'FINOMENA', fund:'KFGGRMF',           ccy:'THB', cost:150000,  avgUnit:9.3023,  nav:7.6804,  units:16125.04,   isRMF:true  },
-  // UOB broker
-  { broker:'UOB', fund:'KFHEALTH-A',   ccy:'THB', cost:250000, avgUnit:12.6,  nav:12.59, units:19840.33, isRMF:false },
-  { broker:'UOB', fund:'K-GSELECT',    ccy:'THB', cost:250000, avgUnit:10.39, nav:11.3,  units:24069.47, isRMF:false },
-  { broker:'UOB', fund:'KT-INDIA-A',   ccy:'THB', cost:500000, avgUnit:23.73, nav:18.89, units:21067.80, isRMF:false },
-  { broker:'UOB', fund:'UUSA',         ccy:'THB', cost:500000, avgUnit:10.7,  nav:11.77, units:46717.62, isRMF:false },
-  // StashAway
-  { broker:'STASHAWAY', fund:'Personal Portfolio', ccy:'SGD', cost:13986, nav:null, units:null, currentValueSGD:20721.61, isRMF:false },
-  { broker:'STASHAWAY', fund:'SEAPOINT',           ccy:'SGD', cost:20000, nav:null, units:null, currentValueSGD:28051.42, isRMF:false },
-];
-
-// Compute current values
-mutualFunds.forEach(f => {
-  if (f.currentValueSGD !== undefined) {
-    f.currentValue = toTHB(f.currentValueSGD, 'SGD');
-    f.costTHB = toTHB(f.cost, f.ccy);
-  } else {
-    f.currentValue = f.units * f.nav;
-    f.costTHB = f.cost;
-  }
-  f.gainLoss = f.currentValue - f.costTHB;
-  f.gainLossPct = (f.gainLoss / f.costTHB) * 100;
-});
-
-// ── TOTALS ────────────────────────────────────────────────────────────────────
-const cashTHB   = cash.reduce((s,r) => s + toTHB(r.amount, r.ccy), 0);
-const tdTHB     = termDeposits.reduce((s,r) => s + toTHB(r.amount, r.ccy), 0);
-const mfTHB     = mutualFunds.reduce((s,f) => s + f.currentValue, 0);
-const mfCostTHB = mutualFunds.reduce((s,f) => s + f.costTHB, 0);
-const totalTHB  = cashTHB + tdTHB + mfTHB;
-const totalCost = cashTHB + tdTHB + mfCostTHB;
-const totalGain = mfTHB - mfCostTHB;
-
-document.addEventListener('DOMContentLoaded', () => {
-  // Summary cards
-  document.getElementById('total-thb').textContent   = '฿' + fmt(totalTHB);
-  document.getElementById('cash-thb').textContent    = '฿' + fmt(cashTHB);
-  document.getElementById('td-thb').textContent      = '฿' + fmt(tdTHB);
-  document.getElementById('mf-thb').textContent      = '฿' + fmt(mfTHB);
-  document.getElementById('mf-gain').textContent     = (totalGain >= 0 ? '+฿' : '-฿') + fmt(Math.abs(totalGain));
-  document.getElementById('mf-gain').className       = 'amount ' + (totalGain >= 0 ? 'green' : 'red');
-  document.getElementById('mf-cost').textContent     = 'Cost ฿' + fmt(mfCostTHB) + ' · ' + pct(totalGain/mfCostTHB*100);
-
-  // Allocation bar
-  const cp = cashTHB/totalTHB*100, tp = tdTHB/totalTHB*100, mp = mfTHB/totalTHB*100;
-  document.getElementById('bar-cash').style.width = cp + '%';
-  document.getElementById('bar-td').style.width   = tp + '%';
-  document.getElementById('bar-mf').style.width   = mp + '%';
-  document.getElementById('leg-cash').textContent  = cp.toFixed(1) + '%';
-  document.getElementById('leg-td').textContent    = tp.toFixed(1) + '%';
-  document.getElementById('leg-mf').textContent    = mp.toFixed(1) + '%';
-
-  // Section headers
-  document.getElementById('cash-sec-total').textContent = '฿' + fmt(cashTHB);
-  document.getElementById('cash-sec-pct').textContent   = (cashTHB/totalTHB*100).toFixed(1) + '%';
-  document.getElementById('td-sec-total').textContent   = '฿' + fmt(tdTHB);
-  document.getElementById('td-sec-pct').textContent     = (tdTHB/totalTHB*100).toFixed(1) + '%';
-  document.getElementById('mf-sec-total').textContent   = '฿' + fmt(mfTHB);
-  document.getElementById('mf-sec-pct').textContent     = (mfTHB/totalTHB*100).toFixed(1) + '%';
-
-  // Cash table
-  const cashBody = document.getElementById('cash-body');
-  cash.forEach(r => {
-    const thb = toTHB(r.amount, r.ccy);
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${r.institution}</td>
-      <td><span class="badge ${r.badge}">${r.type}</span></td>
-      <td class="right muted">${r.ccy !== 'THB' ? '<span style="color:var(--muted);font-size:10px;margin-right:3px;">'+r.ccy+'</span>' : ''}${fmt(r.amount)}</td>
-      <td class="thb">฿${fmt(thb)}</td>
-      <td class="right muted">${(thb/totalTHB*100).toFixed(1)}%</td>`;
-    cashBody.appendChild(tr);
-  });
-
-  // TD table
-  const tdBody = document.getElementById('td-body');
-  termDeposits.forEach(r => {
-    const thb = toTHB(r.amount, r.ccy);
-    const isExp = r.maturity.includes('Jun 2026');
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${r.institution}</td>
-      <td class="green">${r.rate}</td>
-      <td class="right muted"><span style="color:var(--muted);font-size:10px;margin-right:3px;">AUD</span>${fmt(r.amount)}</td>
-      <td class="thb">฿${fmt(thb)}</td>
-      <td class="right" style="${isExp ? 'color:#e07070' : 'color:var(--muted)'}">${r.maturity}${isExp ? ' ⚠' : ''}</td>
-      <td class="right muted">${(thb/totalTHB*100).toFixed(1)}%</td>`;
-    tdBody.appendChild(tr);
-  });
-
-  // Mutual funds table — grouped by broker
-  const brokers = ['TTB','FINOMENA','UOB','STASHAWAY'];
-  const mfBody = document.getElementById('mf-body');
-  brokers.forEach(broker => {
-    const funds = mutualFunds.filter(f => f.broker === broker);
-    const brokerTotal = funds.reduce((s,f) => s + f.currentValue, 0);
-    const brokerCost  = funds.reduce((s,f) => s + f.costTHB, 0);
-    const brokerGain  = brokerTotal - brokerCost;
-
-    // Broker header row
-    const hdr = document.createElement('tr');
-    hdr.className = 'broker-header-row';
-    hdr.innerHTML = `<td colspan="7">${broker} · ฿${fmt(brokerTotal)} · <span class="${brokerGain>=0?'gain':'loss'}">${pct(brokerGain/brokerCost*100)}</span></td>`;
-    mfBody.appendChild(hdr);
-
-    funds.forEach(f => {
-      const glClass = f.gainLoss >= 0 ? 'gain' : 'loss';
-      const navDisplay = f.nav ? fmt(f.nav) : '—';
-      const unitsDisplay = f.units ? fmt(f.units) : '—';
-      const costDisplay = f.ccy !== 'THB' ? `<span style="color:var(--muted);font-size:10px;">${f.ccy}</span> ${fmt(f.cost)}` : `฿${fmt(f.costTHB)}`;
-      const tr = document.createElement('tr');
-      tr.className = 'broker-group';
-      tr.innerHTML = `
-        <td>${f.fund} ${f.isRMF ? '<span class="badge badge-rmf">RMF</span>' : ''}</td>
-        <td class="right muted">${navDisplay}</td>
-        <td class="right muted">${unitsDisplay}</td>
-        <td class="right muted">${costDisplay}</td>
-        <td class="thb">฿${fmt(f.currentValue)}</td>
-        <td class="right ${glClass}">${f.gainLoss >= 0 ? '+' : ''}฿${fmt(Math.abs(f.gainLoss))}</td>
-        <td class="right ${glClass}">${pct(f.gainLossPct)}</td>`;
-      mfBody.appendChild(tr);
-    });
-  });
-});
-</script>
-
-<!-- SUMMARY CARDS -->
-<div class="summary-grid">
-  <div class="summary-card highlight">
-    <div class="label">Total Wealth (THB)</div>
-    <div class="amount" id="total-thb">—</div>
-    <div class="sub">Cash + TD + Funds</div>
-  </div>
-  <div class="summary-card">
-    <div class="label">Cash &amp; Savings</div>
-    <div class="amount" id="cash-thb">—</div>
-    <div class="sub">6 accounts · 4 currencies</div>
-  </div>
-  <div class="summary-card">
-    <div class="label">Term Deposits</div>
-    <div class="amount" id="td-thb">—</div>
-    <div class="sub">AUD · St George</div>
-  </div>
-  <div class="summary-card">
-    <div class="label">Mutual Funds (market value)</div>
-    <div class="amount" id="mf-thb">—</div>
-    <div class="sub">26 positions · 4 brokers</div>
-  </div>
-  <div class="summary-card">
-    <div class="label">Unrealised Gain / Loss</div>
-    <div class="amount" id="mf-gain">—</div>
-    <div class="sub" id="mf-cost">—</div>
+<!-- LOCK SCREEN -->
+<div id="lock-screen">
+  <h2>Wealth <em>Dashboard</em></h2>
+  <p>Enter your password to continue</p>
+  <div class="lock-box">
+    <label>Password</label>
+    <input type="password" id="pwd-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')unlock()">
+    <button onclick="unlock()">Unlock →</button>
+    <div id="lock-error"></div>
   </div>
 </div>
 
-<!-- ALLOCATION BAR -->
-<div class="alloc-section">
-  <div class="section-title">Asset Allocation</div>
-  <div class="alloc-bar">
-    <div class="alloc-seg" id="bar-cash" style="background:var(--blue);"></div>
-    <div class="alloc-seg" id="bar-td"   style="background:var(--gold);"></div>
-    <div class="alloc-seg" id="bar-mf"   style="background:var(--teal);"></div>
-  </div>
-  <div class="alloc-legend">
-    <div class="legend-item"><div class="legend-dot" style="background:var(--blue);"></div>Cash &amp; Savings <strong id="leg-cash">—</strong></div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--gold);"></div>Term Deposits <strong id="leg-td">—</strong></div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--teal);"></div>Mutual Funds <strong id="leg-mf">—</strong></div>
-  </div>
+<!-- LOADING -->
+<div id="loading">
+  <div class="spinner"></div>
+  <p>Fetching latest data from Google Sheets…</p>
 </div>
 
-<!-- CASH SECTION -->
-<div class="asset-section">
-  <div class="asset-header">
-    <div class="asset-header-left">
-      <div class="asset-dot" style="background:var(--blue);"></div>
-      <span class="asset-type-label">Cash &amp; Savings</span>
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="fx-bar" id="fx-bar">
+    <span style="color:var(--muted);font-weight:500;">FX RATES</span>
+  </div>
+
+  <header>
+    <h1>Wealth <em>Overview</em></h1>
+    <div class="as-of" id="as-of">Loading…</div>
+  </header>
+
+  <div class="summary-grid">
+    <div class="summary-card highlight">
+      <div class="label">Total Wealth (THB)</div>
+      <div class="amount" id="total-thb">—</div>
+      <div class="sub">Cash + TD + Funds</div>
     </div>
-    <div><span class="asset-total" id="cash-sec-total">—</span><span class="asset-pct" id="cash-sec-pct">—</span></div>
+    <div class="summary-card">
+      <div class="label">Cash &amp; Savings</div>
+      <div class="amount" id="cash-thb">—</div>
+      <div class="sub" id="cash-sub">—</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Term Deposits</div>
+      <div class="amount" id="td-thb">—</div>
+      <div class="sub">AUD · St George</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Mutual Funds</div>
+      <div class="amount" id="mf-thb">—</div>
+      <div class="sub" id="mf-sub">—</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Unrealised Gain / Loss</div>
+      <div class="amount" id="mf-gain">—</div>
+      <div class="sub" id="mf-cost">—</div>
+    </div>
   </div>
-  <table>
-    <thead><tr>
+
+  <div class="alloc-section">
+    <div class="section-title">Asset Allocation &nbsp;<button class="refresh-btn" onclick="loadData()">↻ Refresh</button></div>
+    <div class="alloc-bar">
+      <div class="alloc-seg" id="bar-cash" style="background:var(--blue);width:0%"></div>
+      <div class="alloc-seg" id="bar-td"   style="background:var(--gold);width:0%"></div>
+      <div class="alloc-seg" id="bar-mf"   style="background:var(--teal);width:0%"></div>
+    </div>
+    <div class="alloc-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Cash &amp; Savings <strong id="leg-cash">—</strong></div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Term Deposits <strong id="leg-td">—</strong></div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--teal)"></div>Mutual Funds <strong id="leg-mf">—</strong></div>
+    </div>
+  </div>
+
+  <div class="asset-section">
+    <div class="asset-header">
+      <div class="asset-header-left"><div class="asset-dot" style="background:var(--blue)"></div><span class="asset-type-label">Cash &amp; Savings</span></div>
+      <div><span class="asset-total" id="cash-sec-total">—</span><span class="asset-pct" id="cash-sec-pct"></span></div>
+    </div>
+    <table><thead><tr>
       <th>Institution</th><th>Type</th>
       <th class="right">Native Amount</th><th class="right">THB Value</th><th class="right">% of Total</th>
-    </tr></thead>
-    <tbody id="cash-body"></tbody>
-  </table>
-</div>
-
-<!-- TERM DEPOSITS SECTION -->
-<div class="asset-section">
-  <div class="asset-header">
-    <div class="asset-header-left">
-      <div class="asset-dot" style="background:var(--gold);"></div>
-      <span class="asset-type-label">Term Deposits</span>
-    </div>
-    <div><span class="asset-total" id="td-sec-total">—</span><span class="asset-pct" id="td-sec-pct">—</span></div>
+    </tr></thead><tbody id="cash-body"></tbody></table>
   </div>
-  <table>
-    <thead><tr>
+
+  <div class="asset-section">
+    <div class="asset-header">
+      <div class="asset-header-left"><div class="asset-dot" style="background:var(--gold)"></div><span class="asset-type-label">Term Deposits</span></div>
+      <div><span class="asset-total" id="td-sec-total">—</span><span class="asset-pct" id="td-sec-pct"></span></div>
+    </div>
+    <table><thead><tr>
       <th>Institution</th><th>Rate</th>
-      <th class="right">AUD Amount</th><th class="right">THB Value</th><th class="right">Maturity</th><th class="right">% of Total</th>
-    </tr></thead>
-    <tbody id="td-body"></tbody>
-  </table>
-</div>
-
-<!-- MUTUAL FUNDS SECTION -->
-<div class="asset-section">
-  <div class="asset-header">
-    <div class="asset-header-left">
-      <div class="asset-dot" style="background:var(--teal);"></div>
-      <span class="asset-type-label">Mutual Funds</span>
-    </div>
-    <div><span class="asset-total" id="mf-sec-total">—</span><span class="asset-pct" id="mf-sec-pct">—</span></div>
+      <th class="right">Amount</th><th class="right">THB Value</th><th class="right">Maturity</th><th class="right">% of Total</th>
+    </tr></thead><tbody id="td-body"></tbody></table>
   </div>
-  <table>
-    <thead><tr>
-      <th>Fund</th>
-      <th class="right">NAV/Unit</th>
-      <th class="right">Units</th>
-      <th class="right">Cost</th>
-      <th class="right">Market Value</th>
-      <th class="right">Gain / Loss</th>
-      <th class="right">Return</th>
-    </tr></thead>
-    <tbody id="mf-body"></tbody>
-  </table>
+
+  <div class="asset-section">
+    <div class="asset-header">
+      <div class="asset-header-left"><div class="asset-dot" style="background:var(--teal)"></div><span class="asset-type-label">Mutual Funds</span></div>
+      <div><span class="asset-total" id="mf-sec-total">—</span><span class="asset-pct" id="mf-sec-pct"></span></div>
+    </div>
+    <table><thead><tr>
+      <th>Fund</th><th class="right">NAV/Unit</th><th class="right">Units</th>
+      <th class="right">Cost</th><th class="right">Market Value</th>
+      <th class="right">Gain / Loss</th><th class="right">Return</th>
+    </tr></thead><tbody id="mf-body"></tbody></table>
+  </div>
+
+  <footer>
+    <span id="footer-updated">—</span>
+    <span>Unrealised G/L on mutual funds only · Cash &amp; TD at face value</span>
+  </footer>
 </div>
 
-<footer>
-  <span>FX rates are approximate — update as needed</span>
-  <span>Unrealised G/L on mutual funds only · Cash &amp; TD shown at face value</span>
-</footer>
+<script>
+// ── PASSWORD ──────────────────────────────────────────────────────────────────
+// To change your password, edit the value below (between the quotes)
+const PASSWORD = 'wealth2026';
+
+function unlock() {
+  const input = document.getElementById('pwd-input').value;
+  if (input === PASSWORD) {
+    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('loading').style.display = 'flex';
+    loadData();
+  } else {
+    document.getElementById('lock-error').textContent = 'Incorrect password. Try again.';
+    document.getElementById('pwd-input').value = '';
+    document.getElementById('pwd-input').focus();
+  }
+}
+
+// ── GOOGLE SHEETS URLS ────────────────────────────────────────────────────────
+const BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQPmzyLISP_lWQwmiIuP7GN3dcfFa01RHigJSWNEa4WcGbil0BRKk_bqZmGlUgTgooj_efVcQ3kdSNl/pub';
+const URLS = {
+  fx:   BASE + '?gid=0&single=true&output=csv',
+  cash: BASE + '?gid=1232285110&single=true&output=csv',
+  td:   BASE + '?gid=528501675&single=true&output=csv',
+  mf:   BASE + '?gid=1136482921&single=true&output=csv',
+};
+
+// ── CSV PARSER ────────────────────────────────────────────────────────────────
+function parseCSV(text) {
+  const lines = text.trim().split('\n').map(l => l.split(',').map(c => c.trim().replace(/^"|"$/g,'')));
+  const headers = lines[0];
+  return lines.slice(1).filter(r => r.some(c => c)).map(row => {
+    const obj = {};
+    headers.forEach((h, i) => obj[h] = row[i] || '');
+    return obj;
+  });
+}
+
+async function fetchCSV(url) {
+  const res = await fetch(url);
+  const text = await res.text();
+  return parseCSV(text);
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function fmt(n)  { return Math.round(n).toLocaleString('en-US'); }
+function pct(v)  { return (v >= 0 ? '+' : '') + v.toFixed(1) + '%'; }
+function toTHB(amount, ccy, fx) { return parseFloat(amount) * (fx[ccy] || 1); }
+
+// ── MAIN LOAD ─────────────────────────────────────────────────────────────────
+async function loadData() {
+  document.getElementById('loading').style.display = 'flex';
+  document.getElementById('dashboard').style.display = 'none';
+
+  try {
+    const [fxRows, cashRows, tdRows, mfRows] = await Promise.all([
+      fetchCSV(URLS.fx), fetchCSV(URLS.cash), fetchCSV(URLS.td), fetchCSV(URLS.mf)
+    ]);
+
+    // FX map
+    const fx = { THB: 1 };
+    fxRows.forEach(r => { fx[r.Currency] = parseFloat(r.RateTHB); });
+
+    // FX bar
+    const fxBar = document.getElementById('fx-bar');
+    fxBar.innerHTML = '<span style="color:var(--muted);font-weight:500;">FX RATES</span>';
+    fxRows.forEach(r => {
+      fxBar.innerHTML += `<span><span class="fx-label">${r.Currency}/THB</span><span>${parseFloat(r.RateTHB).toFixed(2)}</span></span>`;
+    });
+
+    // ── CASH ──
+    const cashTHB = cashRows.reduce((s, r) => s + toTHB(r.Amount, r.Currency, fx), 0);
+    const cashBody = document.getElementById('cash-body');
+    cashBody.innerHTML = '';
+    cashRows.forEach(r => {
+      const thb = toTHB(r.Amount, r.Currency, fx);
+      const badgeMap = { 'Savings':'badge-saving','No-fix':'badge-nofix' };
+      const badge = badgeMap[r.Type] || 'badge-saving';
+      const nativeFmt = r.Currency !== 'THB'
+        ? `<span style="color:var(--muted);font-size:10px;margin-right:3px;">${r.Currency}</span>${fmt(r.Amount)}`
+        : fmt(r.Amount);
+      cashBody.innerHTML += `<tr>
+        <td>${r.Institution}</td>
+        <td><span class="badge ${badge}">${r.Type}</span></td>
+        <td class="right muted">${nativeFmt}</td>
+        <td class="thb">฿${fmt(thb)}</td>
+        <td class="right muted" id="cash-pct-cell">—</td>
+      </tr>`;
+    });
+
+    // ── TERM DEPOSITS ──
+    const tdTHB = tdRows.reduce((s, r) => s + toTHB(r.Amount, r.Currency, fx), 0);
+    const tdBody = document.getElementById('td-body');
+    tdBody.innerHTML = '';
+    tdRows.forEach(r => {
+      const thb = toTHB(r.Amount, r.Currency, fx);
+      const isExp = r.Maturity && r.Maturity.includes('Jun 2026');
+      const matColor = isExp ? 'color:#e07070' : 'color:var(--muted)';
+      const warn = isExp ? ' ⚠' : '';
+      tdBody.innerHTML += `<tr>
+        <td>${r.Institution}</td>
+        <td class="gain">${r.Rate}</td>
+        <td class="right muted"><span style="color:var(--muted);font-size:10px;margin-right:3px;">${r.Currency}</span>${fmt(r.Amount)}</td>
+        <td class="thb">฿${fmt(thb)}</td>
+        <td class="right" style="${matColor}">${r.Maturity}${warn}</td>
+        <td class="right muted">—</td>
+      </tr>`;
+    });
+
+    // ── MUTUAL FUNDS ──
+    const funds = mfRows.map(r => {
+      let currentValue, costTHB;
+      const isStash = r.Broker === 'STASHAWAY';
+      if (isStash) {
+        // For StashAway: NAV column holds current SGD value
+        currentValue = toTHB(r.NAV || r.Units || 0, r.Currency, fx);
+        costTHB = toTHB(r.Cost, r.Currency, fx);
+      } else {
+        const units = parseFloat(r.Units) || 0;
+        const nav   = parseFloat(r.NAV)   || 0;
+        currentValue = units * nav;
+        costTHB = parseFloat(r.Cost) || 0;
+      }
+      const gainLoss = currentValue - costTHB;
+      const gainLossPct = costTHB > 0 ? (gainLoss / costTHB) * 100 : 0;
+      return { ...r, currentValue, costTHB, gainLoss, gainLossPct };
+    });
+
+    const mfTHB     = funds.reduce((s, f) => s + f.currentValue, 0);
+    const mfCostTHB = funds.reduce((s, f) => s + f.costTHB, 0);
+    const totalGain = mfTHB - mfCostTHB;
+    const totalTHB  = cashTHB + tdTHB + mfTHB;
+
+    // Mutual funds table grouped by broker
+    const mfBody = document.getElementById('mf-body');
+    mfBody.innerHTML = '';
+    const brokers = [...new Set(funds.map(f => f.Broker))];
+    brokers.forEach(broker => {
+      const group = funds.filter(f => f.Broker === broker);
+      const bTotal = group.reduce((s, f) => s + f.currentValue, 0);
+      const bCost  = group.reduce((s, f) => s + f.costTHB, 0);
+      const bGain  = bTotal - bCost;
+      const bGainCls = bGain >= 0 ? 'gain' : 'loss';
+      mfBody.innerHTML += `<tr class="broker-header-row"><td colspan="7">${broker} · ฿${fmt(bTotal)} · <span class="${bGainCls}">${pct(bGain/bCost*100)}</span></td></tr>`;
+
+      group.forEach(f => {
+        const glCls = f.gainLoss >= 0 ? 'gain' : 'loss';
+        const isStash = f.Broker === 'STASHAWAY';
+        const navDisp   = isStash ? `<span style="color:var(--muted);font-size:10px;">${f.Currency}</span> ${fmt(f.NAV)}` : (f.NAV || '—');
+        const unitsDisp = isStash ? '—' : (f.Units ? fmt(f.Units) : '—');
+        const costDisp  = f.Currency !== 'THB'
+          ? `<span style="color:var(--muted);font-size:10px;">${f.Currency}</span> ${fmt(f.Cost)}`
+          : `฿${fmt(f.costTHB)}`;
+        const rmfBadge  = f.IsRMF === 'Yes' ? ' <span class="badge badge-rmf">RMF</span>' : '';
+        mfBody.innerHTML += `<tr style="padding-left:1.5rem">
+          <td style="padding-left:1.5rem">${f.Fund}${rmfBadge}</td>
+          <td class="right muted">${navDisp}</td>
+          <td class="right muted">${unitsDisp}</td>
+          <td class="right muted">${costDisp}</td>
+          <td class="thb">฿${fmt(f.currentValue)}</td>
+          <td class="right ${glCls}">${f.gainLoss >= 0 ? '+' : '-'}฿${fmt(Math.abs(f.gainLoss))}</td>
+          <td class="right ${glCls}">${pct(f.gainLossPct)}</td>
+        </tr>`;
+      });
+    });
+
+    // ── SUMMARY ──
+    document.getElementById('total-thb').textContent = '฿' + fmt(totalTHB);
+    document.getElementById('cash-thb').textContent  = '฿' + fmt(cashTHB);
+    document.getElementById('td-thb').textContent    = '฿' + fmt(tdTHB);
+    document.getElementById('mf-thb').textContent    = '฿' + fmt(mfTHB);
+    document.getElementById('mf-sub').textContent    = funds.length + ' positions · 4 brokers';
+    document.getElementById('mf-gain').textContent   = (totalGain >= 0 ? '+฿' : '-฿') + fmt(Math.abs(totalGain));
+    document.getElementById('mf-gain').className     = 'amount ' + (totalGain >= 0 ? 'gain' : 'loss');
+    document.getElementById('mf-cost').textContent   = 'Cost ฿' + fmt(mfCostTHB) + ' · ' + pct(totalGain/mfCostTHB*100);
+
+    // Alloc bar
+    const cp = cashTHB/totalTHB*100, tp = tdTHB/totalTHB*100, mp = mfTHB/totalTHB*100;
+    document.getElementById('bar-cash').style.width = cp + '%';
+    document.getElementById('bar-td').style.width   = tp + '%';
+    document.getElementById('bar-mf').style.width   = mp + '%';
+    document.getElementById('leg-cash').textContent = cp.toFixed(1) + '%';
+    document.getElementById('leg-td').textContent   = tp.toFixed(1) + '%';
+    document.getElementById('leg-mf').textContent   = mp.toFixed(1) + '%';
+
+    // Section headers
+    document.getElementById('cash-sec-total').textContent = '฿' + fmt(cashTHB);
+    document.getElementById('cash-sec-pct').textContent   = (cashTHB/totalTHB*100).toFixed(1) + '%';
+    document.getElementById('td-sec-total').textContent   = '฿' + fmt(tdTHB);
+    document.getElementById('td-sec-pct').textContent     = (tdTHB/totalTHB*100).toFixed(1) + '%';
+    document.getElementById('mf-sec-total').textContent   = '฿' + fmt(mfTHB);
+    document.getElementById('mf-sec-pct').textContent     = (mfTHB/totalTHB*100).toFixed(1) + '%';
+
+    // ── Fix TD % of total ──
+    const tdCells = document.querySelectorAll('#td-body tr');
+    tdRows.forEach((r, i) => {
+      const thb = toTHB(r.Amount, r.Currency, fx);
+      if (tdCells[i]) {
+        const cells = tdCells[i].querySelectorAll('td');
+        if (cells[5]) cells[5].textContent = (thb/totalTHB*100).toFixed(1) + '%';
+      }
+    });
+
+    // ── Fix cash % of total ──
+    const cashCells = document.querySelectorAll('#cash-body tr');
+    cashRows.forEach((r, i) => {
+      const thb = toTHB(r.Amount, r.Currency, fx);
+      if (cashCells[i]) {
+        const cells = cashCells[i].querySelectorAll('td');
+        if (cells[4]) cells[4].textContent = (thb/totalTHB*100).toFixed(1) + '%';
+      }
+    });
+
+    // Date
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}) + ' · ' + now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('as-of').textContent = 'Last updated ' + dateStr + ' · Data from Google Sheets';
+    document.getElementById('footer-updated').textContent = 'Updated ' + dateStr;
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+
+  } catch (err) {
+    document.getElementById('loading').innerHTML = `<p style="color:var(--coral2);font-family:var(--font-mono);">Error loading data: ${err.message}<br><br><button class="refresh-btn" onclick="loadData()">Try again</button></p>`;
+    console.error(err);
+  }
+}
+</script>
 </body>
 </html>

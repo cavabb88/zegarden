@@ -238,7 +238,7 @@ function unlock() {
 }
 
 // ── GOOGLE APPS SCRIPT URL ───────────────────────────────────────────────────
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwj-QjDGlOoqx5Y7C7biaaBa3yI_h1ZekV0U1pUR7OI9Il7xXZ9UbdNfpIiQu04hQFSbg/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyaNGgZFp0GjFqr3X3ZW1MwK1yj-BUUvK4e7xzvIekEgJd4MixXkw4oJjKPHv6OXLcEhg/exec';
 
 // ── APPS SCRIPT FETCHER ──────────────────────────────────────────────────────
 async function fetchSheet(sheetName) {
@@ -251,8 +251,31 @@ async function fetchSheet(sheetName) {
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 function fmt(n)  { return Math.round(n).toLocaleString('en-US'); }
+function fmtD(n) { return n.toFixed(4); }
 function pct(v)  { return (v >= 0 ? '+' : '') + v.toFixed(1) + '%'; }
 function toTHB(amount, ccy, fx) { return parseFloat(amount) * (fx[ccy] || 1); }
+function fmtRate(r) {
+  const n = parseFloat(r);
+  if (isNaN(n)) return r;
+  // Google Sheets sends % as decimals e.g. 0.0345 = 3.45%
+  return n < 1 ? (n * 100).toFixed(2) + '%' : n.toFixed(2) + '%';
+}
+function fmtDate(d) {
+  if (!d || d === '—') return d;
+  // ISO date from Google Sheets e.g. 2026-10-28T17:00:00.000Z
+  if (d.includes('T')) {
+    const dt = new Date(d);
+    return dt.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+  }
+  return d; // already a string like "Incentive Saver"
+}
+function isExpiringSoon(d) {
+  if (!d || !d.includes('T')) return false;
+  const dt = new Date(d);
+  const now = new Date();
+  const days = (dt - now) / (1000 * 60 * 60 * 24);
+  return days < 30;
+}
 
 // ── MAIN LOAD ─────────────────────────────────────────────────────────────────
 async function loadData() {
@@ -301,16 +324,17 @@ async function loadData() {
     tdBody.innerHTML = '';
     tdRows.forEach(r => {
       const thb = toTHB(r.Amount, r.Currency, fx);
-      const isExp = r.Maturity && r.Maturity.includes('Jun 2026');
-      const matColor = isExp ? 'color:#e07070' : 'color:var(--muted)';
-      const warn = isExp ? ' ⚠' : '';
+      const expiring = isExpiringSoon(r.Maturity);
+      const matColor = expiring ? 'color:#e07070' : 'color:var(--muted)';
+      const warn = expiring ? ' ⚠' : '';
+      const matDisplay = fmtDate(r.Maturity);
       tdBody.innerHTML += `<tr>
         <td>${r.Institution}</td>
-        <td class="gain">${r.Rate}</td>
+        <td class="gain">${fmtRate(r.Rate)}</td>
         <td class="right muted"><span style="color:var(--muted);font-size:10px;margin-right:3px;">${r.Currency}</span>${fmt(r.Amount)}</td>
         <td class="thb">฿${fmt(thb)}</td>
-        <td class="right" style="${matColor}">${r.Maturity}${warn}</td>
-        <td class="right muted">—</td>
+        <td class="right" style="${matColor}">${matDisplay}${warn}</td>
+        <td class="right muted td-pct">—</td>
       </tr>`;
     });
 
@@ -319,9 +343,10 @@ async function loadData() {
       let currentValue, costTHB;
       const isStash = r.Broker === 'STASHAWAY';
       if (isStash) {
-        // For StashAway: NAV column holds current SGD value
-        currentValue = toTHB(r.NAV || r.Units || 0, r.Currency, fx);
-        costTHB = toTHB(r.Cost, r.Currency, fx);
+        // StashAway: user stores current SGD value in NAV column
+        const navVal = parseFloat(r.NAV);
+        currentValue = toTHB(isNaN(navVal) ? 0 : navVal, r.Currency, fx);
+        costTHB = toTHB(parseFloat(r.Cost) || 0, r.Currency, fx);
       } else {
         const units = parseFloat(r.Units) || 0;
         const nav   = parseFloat(r.NAV)   || 0;
@@ -398,23 +423,21 @@ async function loadData() {
     document.getElementById('mf-sec-total').textContent   = '฿' + fmt(mfTHB);
     document.getElementById('mf-sec-pct').textContent     = (mfTHB/totalTHB*100).toFixed(1) + '%';
 
-    // ── Fix TD % of total ──
-    const tdCells = document.querySelectorAll('#td-body tr');
-    tdRows.forEach((r, i) => {
-      const thb = toTHB(r.Amount, r.Currency, fx);
-      if (tdCells[i]) {
-        const cells = tdCells[i].querySelectorAll('td');
-        if (cells[5]) cells[5].textContent = (thb/totalTHB*100).toFixed(1) + '%';
+    // ── Fix % of total (now totalTHB is known) ──
+    document.querySelectorAll('#cash-body tr').forEach(tr => {
+      const thbCell = tr.querySelectorAll('td')[3];
+      const pctCell = tr.querySelectorAll('td')[4];
+      if (thbCell && pctCell) {
+        const thbVal = parseFloat(thbCell.textContent.replace(/[฿,]/g,''));
+        pctCell.textContent = (thbVal/totalTHB*100).toFixed(1) + '%';
       }
     });
-
-    // ── Fix cash % of total ──
-    const cashCells = document.querySelectorAll('#cash-body tr');
-    cashRows.forEach((r, i) => {
-      const thb = toTHB(r.Amount, r.Currency, fx);
-      if (cashCells[i]) {
-        const cells = cashCells[i].querySelectorAll('td');
-        if (cells[4]) cells[4].textContent = (thb/totalTHB*100).toFixed(1) + '%';
+    document.querySelectorAll('#td-body tr').forEach(tr => {
+      const thbCell = tr.querySelectorAll('td')[3];
+      const pctCell = tr.querySelectorAll('td')[5];
+      if (thbCell && pctCell) {
+        const thbVal = parseFloat(thbCell.textContent.replace(/[฿,]/g,''));
+        pctCell.textContent = (thbVal/totalTHB*100).toFixed(1) + '%';
       }
     });
 

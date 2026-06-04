@@ -258,9 +258,22 @@ function parseCSV(text) {
 }
 
 async function fetchCSV(url) {
-  const res = await fetch(url);
-  const text = await res.text();
-  return parseCSV(text);
+  const proxies = [
+    u => u,
+    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  ];
+  let lastErr;
+  for (const proxy of proxies) {
+    try {
+      const res = await fetch(proxy(url));
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const text = await res.text();
+      if (text.trim().startsWith('<')) throw new Error('Got HTML not CSV');
+      return parseCSV(text);
+    } catch(e) { lastErr = e; }
+  }
+  throw new Error('All fetch attempts failed: ' + lastErr.message);
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────

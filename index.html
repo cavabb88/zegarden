@@ -226,10 +226,14 @@ const PASSWORD = 'wealth2026';
 
 function unlock() {
   const input = document.getElementById('pwd-input').value;
-  if (true) { // TEST MODE - no password
+  if (input === PASSWORD) {
     document.getElementById('lock-screen').style.display = 'none';
     document.getElementById('loading').style.display = 'flex';
     loadData();
+  } else {
+    document.getElementById('lock-error').textContent = 'Incorrect password. Try again.';
+    document.getElementById('pwd-input').value = '';
+    document.getElementById('pwd-input').focus();
   }
 }
 
@@ -428,8 +432,6 @@ async function loadData() {
     console.error(err);
   }
 }
-  // Auto unlock for testing
-  window.onload = () => unlock();
 </script>
 </body>
 </html>

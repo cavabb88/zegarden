@@ -226,54 +226,23 @@ const PASSWORD = 'wealth2026';
 
 function unlock() {
   const input = document.getElementById('pwd-input').value;
-  if (input === PASSWORD) {
+  if (true) { // TEST MODE - no password
     document.getElementById('lock-screen').style.display = 'none';
     document.getElementById('loading').style.display = 'flex';
     loadData();
-  } else {
-    document.getElementById('lock-error').textContent = 'Incorrect password. Try again.';
-    document.getElementById('pwd-input').value = '';
-    document.getElementById('pwd-input').focus();
   }
 }
 
-// ── GOOGLE SHEETS URLS ────────────────────────────────────────────────────────
-const BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQPmzyLISP_lWQwmiIuP7GN3dcfFa01RHigJSWNEa4WcGbil0BRKk_bqZmGlUgTgooj_efVcQ3kdSNl/pub';
-const URLS = {
-  fx:   BASE + '?gid=0&single=true&output=csv',
-  cash: BASE + '?gid=1232285110&single=true&output=csv',
-  td:   BASE + '?gid=528501675&single=true&output=csv',
-  mf:   BASE + '?gid=1136482921&single=true&output=csv',
-};
+// ── GOOGLE APPS SCRIPT URL ───────────────────────────────────────────────────
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwj-QjDGlOoqx5Y7C7biaaBa3yI_h1ZekV0U1pUR7OI9Il7xXZ9UbdNfpIiQu04hQFSbg/exec';
 
-// ── CSV PARSER ────────────────────────────────────────────────────────────────
-function parseCSV(text) {
-  const lines = text.trim().split('\n').map(l => l.split(',').map(c => c.trim().replace(/^"|"$/g,'')));
-  const headers = lines[0];
-  return lines.slice(1).filter(r => r.some(c => c)).map(row => {
-    const obj = {};
-    headers.forEach((h, i) => obj[h] = row[i] || '');
-    return obj;
-  });
-}
-
-async function fetchCSV(url) {
-  const proxies = [
-    u => u,
-    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-  ];
-  let lastErr;
-  for (const proxy of proxies) {
-    try {
-      const res = await fetch(proxy(url));
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      const text = await res.text();
-      if (text.trim().startsWith('<')) throw new Error('Got HTML not CSV');
-      return parseCSV(text);
-    } catch(e) { lastErr = e; }
-  }
-  throw new Error('All fetch attempts failed: ' + lastErr.message);
+// ── APPS SCRIPT FETCHER ──────────────────────────────────────────────────────
+async function fetchSheet(sheetName) {
+  const url = SCRIPT_URL + '?sheet=' + encodeURIComponent(sheetName);
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('HTTP ' + res.status + ' fetching ' + sheetName);
+  const data = await res.json();
+  return data;
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
@@ -288,7 +257,7 @@ async function loadData() {
 
   try {
     const [fxRows, cashRows, tdRows, mfRows] = await Promise.all([
-      fetchCSV(URLS.fx), fetchCSV(URLS.cash), fetchCSV(URLS.td), fetchCSV(URLS.mf)
+      fetchSheet('FX'), fetchSheet('Cash'), fetchSheet('TermDeposits'), fetchSheet('MutualFunds')
     ]);
 
     // FX map
@@ -459,6 +428,8 @@ async function loadData() {
     console.error(err);
   }
 }
+  // Auto unlock for testing
+  window.onload = () => unlock();
 </script>
 </body>
 </html>
